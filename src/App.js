@@ -1,9 +1,10 @@
 import React, { Component } from "react";
 import ReactDOM from "react-dom";
 import "./App.css";
+import {determineWinner} from "./determineWinner";
 
 class App extends Component {
-  squareArray = Array(9).fill('_');
+  squareArray = Array(9).fill("_");
   apiData = [];
 
   constructor() {
@@ -11,7 +12,8 @@ class App extends Component {
     this.state = {
       turn: "X",
       board: this.squareArray,
-      dataList: ''
+      dataList: "",
+      winner: "none",
     };
   }
 
@@ -23,67 +25,57 @@ class App extends Component {
    * element.
    * @param {*} event - click on a square
    */
-   squareClicked(event) {
-    if (this.squareArray[event.target.dataset.square] === '_') {
+  squareClicked(event) {
+    if (
+      this.squareArray[event.target.dataset.square] === "_" &&
+      this.state.winner === "none"
+    ) {
       this.squareArray[event.target.dataset.square] = this.state.turn;
       event.target.innerText = this.state.turn;
       let nextTurn = this.state.turn === "X" ? "O" : "X";
+
+      let getResult = determineWinner(this.squareArray);
+
       this.setState({
         turn: nextTurn,
+        winner: getResult,
+      });
+
+      this.sendRequest({
+        board: this.squareArray,
+        winner: getResult,
       });
     }
-
-     this.sendRequest({
-      board: this.squareArray,
-      winner: this.determineWinner(),
-    });
   }
 
-  determineWinner() {
-    const winCombinations = [
-      [0, 1, 2],
-      [3, 4, 5],
-      [6, 7, 8],
-      [0, 3, 6],
-      [1, 4, 7],
-      [2, 5, 8],
-      [6, 4, 2],
-      [0, 4, 8],
-    ];
-
-    for (let comb in winCombinations) {
-      if (
-        this.squareArray[winCombinations[comb][0]] === this.squareArray[winCombinations[comb][1]] &&
-        this.squareArray[winCombinations[comb][0]] === this.squareArray[winCombinations[comb][2]] &&
-        this.squareArray[winCombinations[comb][0]] !== '_'
-      ) {
-        return this.squareArray[comb[0]];
-      }
+  displayWinner() {
+    if (this.state.winner === "none") {
+      return "";
+    } else if (this.state.winner === "X") {
+      return "The winner is X!";
+    } else if (this.state.winner === "O") {
+      return "The winner is O!";
+    } else {
+      return "DRAW!";
     }
-
-    if (!this.squareArray.includes('_')) {
-      return "draw";
-    }
-
-    return "none";
   }
 
-   sendRequest(data) {
+  sendRequest(data) {
     const options = {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(data),
     };
-     fetch("/api", options)
-    .then((res) => {
-      return res.json()
-    })
-    .then((retrievedData) => {
-      this.apiData.push(JSON.stringify(retrievedData));
-      this.setState({
-        dataList: this.apiData.map(data => <li>{data}</li>)
+    fetch("/api", options)
+      .then((res) => {
+        return res.json();
       })
-    });
+      .then((retrievedData) => {
+        this.apiData.push(JSON.stringify(retrievedData));
+        this.setState({
+          dataList: this.apiData.map((data) => <li>{data}</li>),
+        });
+      });
   }
 
   render() {
@@ -101,11 +93,12 @@ class App extends Component {
           <div className="square" data-square="7"></div>
           <div className="square" data-square="8"></div>
         </div>
+        <div id="winner">
+          <h1>{this.displayWinner()}</h1>
+        </div>
         <div id="api-logs">
-        <div id="log-title">Activity Log:</div>
-          <ol>
-            {this.state.dataList}
-          </ol>
+          <div id="log-title">Activity Log:</div>
+          <ol>{this.state.dataList}</ol>
         </div>
       </div>
     );
