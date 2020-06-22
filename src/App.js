@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 import "./App.css";
-import { determineWinner } from "./determineWinner";
+import { determineWinner, displayWinner } from "./determineWinUtil";
 
 class App extends Component {
   squareArray = Array(9).fill("_");
@@ -47,23 +47,6 @@ class App extends Component {
     }
   }
 
-  /**
-   * displayWinner method returns the
-   * outcome of the game when it is finished,
-   * otherwise it returns an empty string
-   */
-  displayWinner() {
-    if (this.state.winner === "none") {
-      return "";
-    } else if (this.state.winner === "X") {
-      return "The winner is X!";
-    } else if (this.state.winner === "O") {
-      return "The winner is O!";
-    } else {
-      return "DRAW!";
-    }
-  }
-
   sendRequest(data) {
     const options = {
       method: "POST",
@@ -100,7 +83,7 @@ class App extends Component {
           <div className="square" data-square="8"></div>
         </div>
         <div id="winner">
-          <h1 data-testid="display-winner">{this.displayWinner()}</h1>
+          <h1 data-testid="display-winner">{displayWinner(this.state.winner)}</h1>
         </div>
         <div id="api-logs">
           <div id="log-title">Activity Log:</div>

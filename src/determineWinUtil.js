@@ -37,3 +37,20 @@ export function determineWinner(movesArray) {
   return "none";
 }
 
+  /**
+   * displayWinner method returns the
+   * outcome of the game when it is finished,
+   * otherwise it returns an empty string
+   */
+export function displayWinner(winnerState) {
+    if (winnerState === "none") {
+      return "";
+    } else if (winnerState === "X") {
+      return "The winner is X!";
+    } else if (winnerState === "O") {
+      return "The winner is O!";
+    } else {
+      return "DRAW!";
+    }
+  }
+

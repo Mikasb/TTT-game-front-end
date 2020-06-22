@@ -1,4 +1,4 @@
-import { determineWinner } from "../determineWinner";
+import { determineWinner } from "../determineWinUtil";
 
 test("testing X is the winner outcome", () => {
   const value = determineWinner(["X", "O", "O", "X", "_", "_", "X", "_", "_"]);
