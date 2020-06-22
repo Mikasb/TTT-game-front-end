@@ -1,7 +1,6 @@
 import React, { Component } from "react";
-import ReactDOM from "react-dom";
 import "./App.css";
-import {determineWinner} from "./determineWinner";
+import { determineWinner } from "./determineWinner";
 
 class App extends Component {
   squareArray = Array(9).fill("_");
@@ -48,6 +47,11 @@ class App extends Component {
     }
   }
 
+  /**
+   * displayWinner method returns the
+   * outcome of the game when it is finished,
+   * otherwise it returns an empty string
+   */
   displayWinner() {
     if (this.state.winner === "none") {
       return "";
@@ -66,7 +70,7 @@ class App extends Component {
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(data),
     };
-    fetch("/api", options)
+    fetch("http://localhost:3000/api", options)
       .then((res) => {
         return res.json();
       })
@@ -81,10 +85,12 @@ class App extends Component {
   render() {
     return (
       <div id="game">
-        <div id="game-title">TicTacToe Game</div>
+        <div id="game-title" data-testid="titletest">
+          TicTacToe Game
+        </div>
         <div id="board" onClick={(event) => this.squareClicked(event)}>
-          <div className="square" data-square="0"></div>
-          <div className="square" data-square="1"></div>
+          <div className="square" data-square="0" data-testid="square1"></div>
+          <div className="square" data-square="1" data-testid="square2"></div>
           <div className="square" data-square="2"></div>
           <div className="square" data-square="3"></div>
           <div className="square" data-square="4"></div>
@@ -94,7 +100,7 @@ class App extends Component {
           <div className="square" data-square="8"></div>
         </div>
         <div id="winner">
-          <h1>{this.displayWinner()}</h1>
+          <h1 data-testid="display-winner">{this.displayWinner()}</h1>
         </div>
         <div id="api-logs">
           <div id="log-title">Activity Log:</div>
@@ -104,7 +110,5 @@ class App extends Component {
     );
   }
 }
-
-ReactDOM.render(<App />, document.querySelector("#game-area"));
 
 export default App;

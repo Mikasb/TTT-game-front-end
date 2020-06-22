@@ -1,3 +1,11 @@
+/**
+ * determineWinner method checks if there is a winner
+ * in the given array of player moves. It returns
+ * the winner if the array contains at least one winning combination,
+ * returns "draw" if the match is draw or "none" if there is no winner
+ * and the match is still not finished.
+ * @param {*} movesArray - given array to check
+ */
 export function determineWinner(movesArray) {
   const winCombinations = [
     [0, 1, 2],
